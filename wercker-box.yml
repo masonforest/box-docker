@@ -1,0 +1,24 @@
+name: docker
+version: 0.0.1
+inherits: wercker/ubuntu12.04-webessentials@0.0.3
+type: service
+platform: ubuntu@12.04
+description: wercker box for docker
+keywords:
+  - docker
+packages:
+  - docker@1.5
+script: |
+  sudo apt-get update
+  sudo apt-get install -y update-manager-core
+  sudo do-release-upgrade -f DistUpgradeViewNonInteractive -m server -d
+  sudo apt-get install -y aptitude
+  sudo aptitude update
+  sudo aptitude safe-upgrade
+  sudo aptitude install -y software-properties-common
+  sudo apt-get update
+  curl -sSL https://get.docker.com/ubuntu/ | sudo sh
+  sudo sh -c 'echo "DOCKER_OPTS=\"--tls=false -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock\"" >> /etc/default/docker'
+  sudo service docker restart
+env:
+  DOCKER_HOST: $$HOST$$:2375
